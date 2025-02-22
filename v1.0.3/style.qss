@@ -1,0 +1,66 @@
+/* General Window Styling */
+QWidget {
+    background-color: #121212;  /* Deep black background */
+    color: #E0E0E0;  /* Light gray text */
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+/* Labels */
+QLabel {
+    color: #80CBC4;  /* Soft teal color */
+    font-weight: bold;
+}
+
+/* Input Fields */
+QLineEdit {
+    background-color: #1E1E1E;  /* Dark gray input field */
+    border: 1px solid #64B5F6;  /* Blue border */
+    border-radius: 5px;
+    padding: 5px;
+    color: #E0E0E0;
+    selection-background-color: #64B5F6; /* Light blue selection */
+}
+
+/* Buttons */
+QPushButton {
+    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 #FF9800, stop:1 #F57C00);  /* Gradient Orange */
+    color: #FFFFFF;
+    border-radius: 5px;
+    padding: 8px;
+    font-weight: bold;
+    border: 1px solid #E65100; /* Darker orange border */
+}
+
+QPushButton:hover {
+    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 #FFB74D, stop:1 #FF9800); /* Lighter gradient on hover */
+    border: 1px solid #FF6D00;
+}
+
+QPushButton:pressed {
+    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 #E65100, stop:1 #BF360C); /* Darker pressed effect */
+    border: 1px solid #BF360C;
+}
+
+/* Progress Bar */
+QProgressBar {
+    border: 1px solid #64B5F6;  /* Blue border */
+    border-radius: 5px;
+    background-color: #1E1E1E; /* Dark background */
+    text-align: center;
+    color: #E0E0E0;
+}
+
+QProgressBar::chunk {
+    background-color: #64B5F6; /* Soft blue progress */
+    width: 10px;
+}
+
+/* Text Output */
+QTextEdit {
+    background-color: #1E1E1E;  /* Dark gray background */
+    border: 1px solid #64B5F6;  /* Blue border */
+    border-radius: 5px;
+    padding: 5px;
+    color: #E0E0E0;
+}
