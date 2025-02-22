@@ -69,7 +69,7 @@ class GitCloneApp(QWidget):
         self.initUI()
 
     def initUI(self):
-        self.setWindowTitle("GitHub Repo Cloner")
+        self.setWindowTitle("Repo Grab")
         self.setGeometry(400, 200, 500, 350)
 
         layout = QVBoxLayout()
