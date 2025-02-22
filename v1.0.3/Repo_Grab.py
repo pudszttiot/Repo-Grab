@@ -1,6 +1,6 @@
 #      ╔═══════════════════════════════════════╗
 #
-#                      Git Cloner                 
+#                       Repo Grab                 
 #
 #      ╚═══════════════════════════════════════╝
 #
@@ -18,7 +18,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 
 VERSION = "1.0.3"  # Current local version
-GITHUB_REPO = "https://api.github.com/repos/pudszttiot/Repo_Grab/releases/latest"  # Replace with your repo API URL
+GITHUB_REPO = "https://api.github.com/repos/pudszttiot/Repo-Grab/releases/latest"  # Replace with your repo API URL
 
 class GitCloneThread(QThread):
     """Thread to run the git-clone command with progress tracking."""
