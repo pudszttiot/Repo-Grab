@@ -154,6 +154,7 @@ class GitCloneApp(QWidget):
         self.clone_thread = GitCloneThread(repo_url, self.destination_folder)
         self.clone_thread.output_signal.connect(self.update_output)
         self.clone_thread.progress_signal.connect(self.update_progress)
+        self.clone_thread.finished.connect(self.show_completion_message)  # Signal when done
         self.clone_thread.start()
 
     def check_for_updates(self):
@@ -175,10 +176,19 @@ class GitCloneApp(QWidget):
     def update_output(self, text):
         """Update the output log."""
         self.output_text.append(text)
+        if "Clone completed successfully!" in text:
+            self.show_completion_message()
 
     def update_progress(self, value):
         """Update the progress bar."""
         self.progress_bar.setValue(value)
+
+    def show_completion_message(self):
+        """Show a message when cloning is complete."""
+        if self.progress_bar.value() == 100:
+            QMessageBox.information(self, "Clone Complete", "✅ Repository has been cloned successfully!")
+        else:
+            QMessageBox.warning(self, "Clone Failed", "❌ Repository cloning failed. Check the log for details.")
 
     def show_error(self, message):
         """Display an error message."""
