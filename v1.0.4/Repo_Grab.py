@@ -13,12 +13,12 @@ import os
 import subprocess
 import requests
 from PyQt5.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QFileDialog, QTextEdit, QProgressBar
+    QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QFileDialog, QTextEdit, QProgressBar, QMessageBox
 )
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 from PyQt5.QtGui import QPixmap, QIcon
 
-VERSION = "1.0.3"  # Current local version
+VERSION = "1.0.4"  # Current local version
 GITHUB_REPO = "https://api.github.com/repos/pudszttiot/Repo-Grab/releases/latest"  # Replace with your repo API URL
 
 class GitCloneThread(QThread):
@@ -48,10 +48,13 @@ class GitCloneThread(QThread):
 
             for line in process.stdout:
                 self.output_signal.emit(line.strip())
-
+                
                 if "Receiving objects:" in line:
-                    percent = int(line.split("%")[0].split()[-1])  # Extract percentage
-                    self.progress_signal.emit(percent)
+                    try:
+                        percent = int(line.split("%")[0].split()[-1])  # Extract percentage
+                        self.progress_signal.emit(percent)
+                    except ValueError:
+                        self.progress_signal.emit(0)
 
             process.wait()
 
@@ -71,6 +74,7 @@ class GitCloneApp(QWidget):
     
     def __init__(self):
         super().__init__()
+        self.destination_folder = ""
         self.initUI()
 
     def initUI(self):
@@ -90,6 +94,7 @@ class GitCloneApp(QWidget):
 
         self.clone_button = QPushButton("Clone Repository")
         self.clone_button.clicked.connect(self.clone_repository)
+        self.clone_button.setEnabled(False)
 
         self.update_button = QPushButton("Check for Updates")
         self.update_button.clicked.connect(self.check_for_updates)
@@ -118,16 +123,17 @@ class GitCloneApp(QWidget):
         if folder:
             self.destination_folder = folder
             self.label_folder.setText(f"Destination: {folder}")
+            self.clone_button.setEnabled(True)
 
     def clone_repository(self):
         """Start cloning process."""
         repo_url = self.input_url.text().strip()
         if not repo_url:
-            self.output_text.append("❌ Please enter a valid GitHub URL.")
+            self.show_error("Please enter a valid GitHub URL.")
             return
 
-        if not hasattr(self, 'destination_folder'):
-            self.output_text.append("❌ Please select a destination folder.")
+        if not self.destination_folder:
+            self.show_error("Please select a destination folder.")
             return
 
         self.output_text.append(f"🔄 Cloning {repo_url} into {self.destination_folder}...\n")
@@ -141,17 +147,17 @@ class GitCloneApp(QWidget):
     def check_for_updates(self):
         """Check for the latest version on GitHub."""
         try:
-            response = requests.get(GITHUB_REPO)
+            response = requests.get(GITHUB_REPO, timeout=5)
             if response.status_code == 200:
-                latest_version = response.json()["tag_name"]
+                latest_version = response.json().get("tag_name", "Unknown")
                 if latest_version != VERSION:
                     self.output_text.append(f"⚠️ New version available: {latest_version}. Please update.")
                 else:
                     self.output_text.append("✅ You have the latest version.")
             else:
-                self.output_text.append("❌ Failed to check for updates.")
-        except Exception as e:
-            self.output_text.append(f"❌ Error checking updates: {e}")
+                self.show_error("Failed to check for updates.")
+        except requests.RequestException as e:
+            self.show_error(f"Error checking updates: {e}")
 
     def update_output(self, text):
         """Update the output log."""
@@ -161,14 +167,18 @@ class GitCloneApp(QWidget):
         """Update the progress bar."""
         self.progress_bar.setValue(value)
 
+    def show_error(self, message):
+        """Display an error message."""
+        QMessageBox.critical(self, "Error", message)
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    # Load QSS stylesheet
-    with open("style.qss", "r") as f:
-        app.setStyleSheet(f.read())
+    # Load QSS stylesheet if available
+    if os.path.exists("style.qss"):
+        with open("style.qss", "r") as f:
+            app.setStyleSheet(f.read())
 
     window = GitCloneApp()
     window.show()
     sys.exit(app.exec_())
-

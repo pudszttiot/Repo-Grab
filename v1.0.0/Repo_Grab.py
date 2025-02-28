@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QFileDialog, QTextEdit
 )
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
+from PyQt5.QtGui import QPixmap, QIcon
 
 class GitCloneThread(QThread):
     """Thread to run the git-clone command."""
@@ -46,6 +47,7 @@ class GitCloneApp(QWidget):
 
     def initUI(self):
         self.setWindowTitle("Repo Grab")
+        self.setWindowIcon(QIcon(r"../Images/Repo_Grab_3.png"))
         self.setGeometry(400, 200, 500, 300)
 
         layout = QVBoxLayout()
